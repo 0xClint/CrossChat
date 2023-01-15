@@ -24,8 +24,16 @@ const Sidebar = () => {
   return (
     <div className="w-96 bg-white">
       <div className="container flex flex-col items-center py-5 gap-2">
-        <div className="channel"><button className="btn btn-primary w-72 h-16 text-[1.3rem] capitalize mb-5">Create Channel</button></div>
-        {data
+        <div className="channel">
+          <a
+            href="#my-modal-2"
+            className="btn btn-primary w-72 h-16 text-[1.3rem] capitalize mb-5"
+          >
+            Create Channel
+          </a>
+        </div>
+        <button>Refresh</button>
+        {/* {data
           ? data.map(({ name, address }) => {
               return (
                 <div className="contact border w-[96%] h-16 rounded-xl flex items-center gap-3 pl-3 cursor-pointer hover:bg-[#FAFAFA]">
@@ -40,7 +48,10 @@ const Sidebar = () => {
                 </div>
               );
             })
-          : ""}
+          : ""} */}
+        <div>
+          <button>Refresh</button>
+        </div>
       </div>
     </div>
   );
