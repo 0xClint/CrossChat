@@ -6,7 +6,8 @@ import { MoralisProvider } from "react-moralis";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <MoralisProvider initializeOnMount={false}>
+  <MoralisProvider 
+  >
     <App />
   </MoralisProvider>
 );

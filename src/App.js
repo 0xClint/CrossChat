@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
-import { useWeb3Contract } from "react-moralis";
+import { useWeb3Contract, useApiContract } from "react-moralis";
 import { Loading } from "web3uikit";
 import { Fuji, Logo, Polygon, Send } from "./assets";
 import { Header, Sidebar } from "./components";
 import { abi, contractAddresses } from "./constants";
+
 
 const msgArray = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
 
@@ -37,14 +38,15 @@ function App() {
     account,
     chainId: chainIdHex,
   } = useMoralis();
-
+  
   const [receiptAddress, setReceiptAddress] = useState();
   const [channelReceiptAddress, setChannelReceiptAddress] = useState();
   const [msg, setMsg] = useState("");
   const [chain, setChain] = useState("Select chain");
   const chainId = parseInt(chainIdHex);
   const contractAddress =
-    chainId in contractAddresses ? contractAddresses[chainId][0] : null;
+  chainId in contractAddresses ? contractAddresses[chainId][0] : null;
+  
 
   const [contacts, setContacts] = useState();
   const [message, setMessage] = useState();
@@ -62,7 +64,7 @@ function App() {
   // console.log(contractAddresses[80001]);
 
   const handleCreate = async () => {
-    console.log(contractAddress,contractAddresses[80001][0])
+    console.log(contractAddress, contractAddresses[80001][0]);
     const options = {
       abi: abi,
       contractAddress: contractAddress,
@@ -101,26 +103,9 @@ function App() {
     setMsg("");
   };
 
-  // useEffect(async () => {
-  //   const getContact = async () => {
-  //     console.log("getContacts");
-  //     const options3 = {
-  //       abi: abi,
-  //       chainId: "80001",
-  //       contractAddress: "0x12191A578Ca827D2cd97609Bd68C26A4EA653101",
-  //       functionName: "getContacts",
-  //       params: { u0: account },
-  //     };
-  //     let something = await runContractFunction({ params: options3 });
-  //     // setContacts(something);
-  //     console.log(something);
-  //   };
-
-  //   getContact();
-  // }, []);
 
   const getContact = async () => {
-    console.log("getContacts", account);
+    // console.log("getContacts", account);
     const options3 = {
       abi: abi,
       contractAddress: "0x12191A578Ca827D2cd97609Bd68C26A4EA653101",
@@ -135,7 +120,7 @@ function App() {
   const getMessages = async () => {
     // // let something = [];
     const options3 = {
-      chainId:chainId,
+      chainId: chainId,
       abi: abi,
       contractAddress: "0x12191A578Ca827D2cd97609Bd68C26A4EA653101",
       // functionName: "getContacts",
@@ -148,23 +133,20 @@ function App() {
     setMessage(something);
   };
 
-  // const { data, error, runContractFunction, isFetching, isLoading } =
-  //   useWeb3Contract({
-  //     abi: abi,
-  //     contractAddress: "0x12191A578Ca827D2cd97609Bd68C26A4EA653101",
-  //     functionName: "getContacts",
-  //     params: {
-  //       params: { u0: account, u1: receiptAddress },
-  //     },
-  //   });
-  // console.log(data, error, isLoading, isFetching);
-
   const handleContactClick = (address) => {
     setReceiptAddress(address);
-    // getMessages();
-    runContractFunction();
+    getMessages();
   };
-  // console.log(contacts);
+
+  // const { runContractFunction, data, error } = useApiContract({
+  //   address: "0x12191A578Ca827D2cd97609Bd68C26A4EA653101",
+  //   functionName: "getContacts",
+  //   abi: abi,
+  //   params: { u0: account },
+  // });
+  // console.log(data, error);
+
+
   if (!isWeb3Enabled) {
     return (
       <div className="App overflow-hidden h-[100vh] flex flex-col justify-center items-center">
@@ -186,7 +168,7 @@ function App() {
           {/* <Sidebar /> */}
           <div className="w-96 bg-white">
             <div className="container flex flex-col items-center py-5 gap-2">
-              <div className="channel">
+              <div className=" channel">
                 <a
                   href="#my-modal-2"
                   className="btn btn-primary w-72 h-16 text-[1.3rem] capitalize mb-5"
@@ -270,7 +252,7 @@ function App() {
 
               <div className=" flex justify-center my-3">
                 <a
-                  // href="#"
+                  href="#"
                   className="btn btn-primary w-72 h-14 text-[1.3rem] capitalize"
                   type="submit"
                   onClick={() => handleCreate()}
@@ -304,7 +286,7 @@ function App() {
                       );
                     }
                   })
-                : "no data"}
+                : ""}
             </div>
             <div className="input absolute bottom-3 w-2/3 flex rounded-none bg-transparent gap-2">
               <input
