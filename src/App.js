@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
 import { useWeb3Contract } from "react-moralis";
+import { Loading } from "web3uikit";
 import { Fuji, Logo, Polygon, Send } from "./assets";
 import { Header, Sidebar } from "./components";
 import { abi, contractAddresses } from "./constants";
@@ -38,6 +39,7 @@ function App() {
   } = useMoralis();
 
   const [receiptAddress, setReceiptAddress] = useState();
+  const [channelReceiptAddress, setChannelReceiptAddress] = useState();
   const [msg, setMsg] = useState("");
   const [chain, setChain] = useState("Select chain");
   const chainId = parseInt(chainIdHex);
@@ -60,6 +62,7 @@ function App() {
   // console.log(contractAddresses[80001]);
 
   const handleCreate = async () => {
+    console.log(contractAddress,contractAddresses[80001][0])
     const options = {
       abi: abi,
       contractAddress: contractAddress,
@@ -68,7 +71,7 @@ function App() {
         chainId: "80001",
         destinationContractAddress: contractAddresses[80001][0],
         user0: account,
-        user1: receiptAddress,
+        user1: channelReceiptAddress,
         message: "#NULL#",
       },
       // msgValue: 0,
@@ -88,40 +91,41 @@ function App() {
         chainId: "80001",
         destinationContractAddress: contractAddresses[80001][0],
         user0: account,
-        user1: "0xe468c2035adD65e1Feafeb6Ba4695990f7AB8F17",
+        user1: receiptAddress,
         message: msg,
       },
     };
     console.log(account, receiptAddress);
     const something = await runContractFunction({ params: options });
     console.log(something, account);
-    setMsg("")
+    setMsg("");
   };
 
-  useEffect(async () => {
-    const getContact = async () => {
-      console.log("getContacts");
-      const options3 = {
-        abi: abi,
-        contractAddress: "0x12191A578Ca827D2cd97609Bd68C26A4EA653101",
-        functionName: "getContacts",
-        params: { u0: account },
-      };
-      let something = await runContractFunction({ params: options3 });
-      // setContacts(something);
-      console.log(something);
-    };
+  // useEffect(async () => {
+  //   const getContact = async () => {
+  //     console.log("getContacts");
+  //     const options3 = {
+  //       abi: abi,
+  //       chainId: "80001",
+  //       contractAddress: "0x12191A578Ca827D2cd97609Bd68C26A4EA653101",
+  //       functionName: "getContacts",
+  //       params: { u0: account },
+  //     };
+  //     let something = await runContractFunction({ params: options3 });
+  //     // setContacts(something);
+  //     console.log(something);
+  //   };
 
-    getContact();
-  }, []);
+  //   getContact();
+  // }, []);
 
   const getContact = async () => {
-    console.log("getContacts");
+    console.log("getContacts", account);
     const options3 = {
       abi: abi,
       contractAddress: "0x12191A578Ca827D2cd97609Bd68C26A4EA653101",
       functionName: "getContacts",
-      params: { u0: "0x562f28a7F5B904a6523FF705881Cb8c60aa794CB" },
+      params: { u0: account },
     };
     let something = await runContractFunction({ params: options3 });
     setContacts(something);
@@ -129,8 +133,9 @@ function App() {
   };
 
   const getMessages = async () => {
-    // let something = [];
+    // // let something = [];
     const options3 = {
+      chainId:chainId,
       abi: abi,
       contractAddress: "0x12191A578Ca827D2cd97609Bd68C26A4EA653101",
       // functionName: "getContacts",
@@ -143,9 +148,21 @@ function App() {
     setMessage(something);
   };
 
+  // const { data, error, runContractFunction, isFetching, isLoading } =
+  //   useWeb3Contract({
+  //     abi: abi,
+  //     contractAddress: "0x12191A578Ca827D2cd97609Bd68C26A4EA653101",
+  //     functionName: "getContacts",
+  //     params: {
+  //       params: { u0: account, u1: receiptAddress },
+  //     },
+  //   });
+  // console.log(data, error, isLoading, isFetching);
+
   const handleContactClick = (address) => {
     setReceiptAddress(address);
-    getMessages();
+    // getMessages();
+    runContractFunction();
   };
   // console.log(contacts);
   if (!isWeb3Enabled) {
@@ -200,7 +217,7 @@ function App() {
                     );
                   })
                 : ""}
-              <button onClick={()=>getContact()}>Refresh</button>
+              <button onClick={() => getContact()}>Refresh</button>
             </div>
           </div>
 
@@ -214,8 +231,8 @@ function App() {
                 placeholder="Address"
                 className="input input-bordered w-full my-3 "
                 required
-                value={receiptAddress}
-                onChange={(e) => setReceiptAddress(e.target.value)}
+                value={channelReceiptAddress}
+                onChange={(e) => setChannelReceiptAddress(e.target.value)}
               />
               <div className="dropdown mb-20 mt-2">
                 <label tabIndex={0} className=" border py-2 px-2 rounded-lg">
@@ -236,7 +253,7 @@ function App() {
                       <span className="w-7 h-7">
                         <Fuji className="w-7 h-7" />
                       </span>
-                      Goerli
+                      Fuji
                     </a>
                   </li>
                   <li>
@@ -244,7 +261,7 @@ function App() {
                       <span className="w-7 h-7 flex justify-center items-center rounded-full bg-[#C3F9E5]">
                         G
                       </span>
-                      Fuji
+                      Goerli
                     </a>
                   </li>
                 </ul>
